@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Essence - Scent Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #8FB3AA;
+            --primary-light: #C2D8D1;
+            --primary-dark: #5A8B7F;
+            --secondary: #D4A5A5;
+            --secondary-light: #F0D9D9;
+            --secondary-dark: #B87C7C;
+            --accent: #9A8FB3;
+            --white: #FDFCFB;
+            --light-gray: #F5F3F0;
+            --gray: #E5E2DD;
+            --dark-gray: #6D6A65;
+            --black: #3A3732;
+            --shadow: 0 4px 12px rgba(58, 55, 50, 0.08);
+            --transition: all 0.3s ease;
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Navigation */
+        header {
+            padding: 24px 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            z-index: 100;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            font-size: 24px;
+            color: var(--primary-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .burger-menu {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .burger-menu:hover {
+            background-color: var(--light-gray);
+        }
+
+        .burger-menu span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background-color: var(--primary-dark);
+            margin: 2px 0;
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        /* Navigation Panel */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(58, 55, 50, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 320px;
+            height: 100%;
+            background-color: var(--white);
+            z-index: 1001;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 20px rgba(58, 55, 50, 0.1);
+            transition: right 0.4s ease;
+        }
+
+        .nav-panel.active {
+            right: 0;
+        }
+
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            font-size: 22px;
+            color: var(--primary-dark);
+        }
+
+        .close-menu {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .close-menu:hover {
+            background-color: var(--light-gray);
+        }
+
+        .close-menu i {
+            font-size: 20px;
+            color: var(--dark-gray);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            background-color: var(--light-gray);
+            color: var(--primary-dark);
+        }
+
+        .nav-links li a i {
+            margin-right: 16px;
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            opacity: 0;
+            flex-grow: 1;
+            padding-bottom: 32px;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Home Page */
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: var(--black);
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: var(--dark-gray);
+            margin-bottom: 40px;
+        }
+
+        .project-options {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .project-card {
+            padding: 32px 24px;
+            border-radius: var(--radius);
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(58, 55, 50, 0.12);
+        }
+
+        .energetic-card {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+        }
+
+        .calming-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .project-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+
+        .project-card .project-subheading {
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .project-card p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 80%;
+        }
+
+        .project-icon {
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            font-size: 48px;
+            opacity: 0.7;
+        }
+
+        /* Scent Selection Pages */
+        .journalling-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding: 20px;
+            border-radius: var(--radius);
+            background-color: var(--light-gray);
+        }
+
+        .journalling-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: var(--white);
+        }
+
+        .morning-icon {
+            background: linear-gradient(135deg, #FF9A8B 0%, #FF6B6B 100%);
+        }
+
+        .evening-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .journalling-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .journalling-title p {
+            color: var(--dark-gray);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .scent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .scent-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .scent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(58, 55, 50, 0.12);
+            border-color: var(--primary-light);
+        }
+
+        .scent-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: var(--white);
+        }
+
+        .scent-info {
+            flex-grow: 1;
+        }
+
+        .scent-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--black);
+        }
+
+        .scent-type {
+            font-size: 14px;
+            color: var(--dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .scent-arrow {
+            color: var(--dark-gray);
+            font-size: 20px;
+        }
+
+        /* Scent Detail Page */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background-color: var(--light-gray);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 500;
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background-color: var(--gray);
+        }
+
+        .scent-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .detail-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            color: var(--white);
+        }
+
+        .scent-detail-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+
+        .scent-detail-title p {
+            color: var(--dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .scent-detail-content {
+            background-color: var(--light-gray);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .detail-section {
+            margin-bottom: 28px;
+        }
+
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-section h3 {
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section h3 i {
+            font-size: 20px;
+        }
+
+        .detail-section p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--black);
+        }
+
+        .mood-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .mood-tag {
+            padding: 8px 16px;
+            background-color: var(--white);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--primary-dark);
+        }
+
+        .project-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        .morning-indicator {
+            background-color: #FFE8E6;
+            color: #FF6B6B;
+        }
+
+        .evening-indicator {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .scent-benefits {
+            background-color: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-top: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .scent-benefits h4 {
+            font-size: 16px;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scent-benefits p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 24px 0;
+            text-align: center;
+            color: var(--dark-gray);
+            font-size: 14px;
+            border-top: 1px solid var(--gray);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .project-card {
+                min-height: 160px;
+                padding: 28px 20px;
+            }
+            
+            .project-card h3 {
+                font-size: 24px;
+            }
+            
+            .scent-detail-content {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .scent-card {
+                padding: 16px;
+                gap: 16px;
+            }
+            
+            .scent-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with burger menu -->
+        <header>
+            <div class="logo">Essence</div>
+            <div class="burger-menu" id="burgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <!-- Navigation overlay -->
+        <div class="nav-overlay" id="navOverlay"></div>
+
+        <!-- Navigation panel -->
+        <nav class="nav-panel" id="navPanel">
+            <div class="nav-header">
+                <div class="nav-logo">Essence</div>
+                <div class="close-menu" id="closeMenu">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active" data-page="home"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#morning-journalling" class="nav-link" data-page="morning-journalling"><i class="fas fa-sun"></i> Morning Journalling</a></li>
+                <li><a href="#evening-journalling" class="nav-link" data-page="evening-journalling"><i class="fas fa-moon"></i> Evening Journalling</a></li>
+            </ul>
+        </nav>
+
+        <!-- Home Page -->
+        <section class="page active" id="home">
+            <h1 class="page-title">Discover Your Scent Journey</h1>
+            <p class="page-subtitle">Select a journalling practice that matches your current mood and needs</p>
+            
+            <div class="project-options">
+                <a href="#morning-journalling" class="project-card energetic-card" data-page="morning-journalling">
+                    <h3>Morning Journalling</h3>
+                    <div class="project-subheading">AWAKENING & ENERGIZING</div>
+                    <p>Stimulate alertness, cognition, and energy via trigeminal-activating compounds</p>
+                    <div class="project-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                </a>
+                
+                <a href="#evening-journalling" class="project-card calming-card" data-page="evening-journalling">
+                    <h3>Evening Journalling</h3>
+                    <div class="project-subheading">CALMING & PRE-BEDTIME</div>
+                    <p>Relaxation, stress reduction, and preparing for sleep</p>
+                    <div class="project-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Morning Journalling Scents -->
+        <section class="page" id="morning-journalling">
+            <a href="#" class="back-button" data-page="home">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            
+            <div class="journalling-header">
+                <div class="journalling-icon morning-icon">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="journalling-title">
+                    <h2>Morning Journalling</h2>
+                    <p>Awakening & Energizing Scents</p>
+                </div>
+            </div>
+            
+            <div class="scent-list">
+                <div class="scent-card" data-scent="peppermint">
+                    <div class="scent-icon" style="background-color: #4CAF50;">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="scent-info">
+                        <div class="scent-name">Peppermint</div>
+                        <div class="scent-type">Mentha piperita</div>
+                    </div>
+                    <div class="scent-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="scent-card" data-scent="citrus">
+                    <div class="scent-icon" style="background-color: #FFC107;">
+                        <i class="fas fa-lemon"></i>
+                    </div>
+                    <div class="scent-info">
+                        <div class="scent-name">Citrus</div>
+                        <div class="scent-type">Lemon & Sweet Orange</div>
+                    </div>
+                    <div class="scent-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="scent-card" data-scent="ginger">
+                    <div class="scent-icon" style="background-color: #FF9800;">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="scent-info">
+                        <div class="scent-name">Ginger</div>
+                        <div class="scent-type">Zingiber officinale</div>
+                    </div>
+                    <div class="scent-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Evening Journalling Scents -->
+        <section class="page" id="evening-journalling">
+            <a href="#" class="back-button" data-page="home">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            
+            <div class="journalling-header">
+                <div class="journalling-icon evening-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="journalling-title">
+                    <h2>Evening Journalling</h2>
+                    <p>Calming & Pre-Bedtime Scents</p>
+                </div>
+            </div>
+            
+            <div class="scent-list">
+                <div class="scent-card" data-scent="lavender">
+                    <div class="scent-icon" style="background-color: #9C27B0;">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <div class="scent-info">
+                        <div class="scent-name">Lavender</div>
+                        <div class="scent-type">Lavandula angustifolia</div>
+                    </div>
+                    <div class="scent-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="scent-card" data-scent="chamomile">
+                    <div class="scent-icon" style="background-color: #FFB74D;">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div class="scent-info">
+                        <div class="scent-name">Chamomile</div>
+                        <div class="scent-type">Matricaria recutita</div>
+                    </div>
+                    <div class="scent-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="scent-card" data-scent="sandalwood">
+                    <div class="scent-icon" style="background-color: #795548;">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="scent-info">
+                        <div class="scent-name">Sandalwood</div>
+                        <div class="scent-type">Santalum album</div>
+                    </div>
+                    <div class="scent-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scent Detail Pages - Morning -->
+        <section class="page" id="peppermint">
+            <a href="#" class="back-button" data-page="morning-journalling">
+                <i class="fas fa-arrow-left"></i> Back to Morning Scents
+            </a>
+            
+            <div class="scent-detail-header">
+                <div class="detail-icon" style="background-color: #4CAF50;">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="scent-detail-title">
+                    <h2>Peppermint</h2>
+                    <p>Mentha piperita</p>
+                </div>
+            </div>
+            
+            <div class="scent-detail-content">
+                <div class="detail-section">
+                    <h3><i class="fas fa-quote-left"></i> Description</h3>
+                    <p>A sharp, minty, and refreshing scent that immediately awakens the senses. Peppermint has a clean, cool aroma that stimulates the mind and refreshes the spirit.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-heart"></i> Mood & Emotional Effect</h3>
+                    <p>Alert, focused, and mentally refreshed. Peppermint activates the trigeminal nerve strongly, increasing alertness, attention, and cognitive performance.</p>
+                    <div class="mood-tags">
+                        <span class="mood-tag">Alertness</span>
+                        <span class="mood-tag">Focus</span>
+                        <span class="mood-tag">Cognitive Boost</span>
+                        <span class="mood-tag">Refreshment</span>
+                    </div>
+                </div>
+                
+                <div class="scent-benefits">
+                    <h4><i class="fas fa-brain"></i> Scientific Benefit</h4>
+                    <p>Peppermint essential oil activates the trigeminal nerve, which has been shown in studies to significantly increase alertness, attention, and cognitive performance.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-sun"></i> Experience Type</h3>
+                    <p>This scent supports morning journalling by sharpening mental clarity, increasing alertness, and preparing the mind for focused, productive writing.</p>
+                    <div class="project-indicator morning-indicator">
+                        <i class="fas fa-sun"></i> Morning Journalling
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page" id="citrus">
+            <a href="#" class="back-button" data-page="morning-journalling">
+                <i class="fas fa-arrow-left"></i> Back to Morning Scents
+            </a>
+            
+            <div class="scent-detail-header">
+                <div class="detail-icon" style="background-color: #FFC107;">
+                    <i class="fas fa-lemon"></i>
+                </div>
+                <div class="scent-detail-title">
+                    <h2>Citrus</h2>
+                    <p>Lemon & Sweet Orange</p>
+                </div>
+            </div>
+            
+            <div class="scent-detail-content">
+                <div class="detail-section">
+                    <h3><i class="fas fa-quote-left"></i> Description</h3>
+                    <p>A bright, zesty, and uplifting blend of lemon and sweet orange. This citrus combination creates an invigorating atmosphere that feels like morning sunshine.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-heart"></i> Mood & Emotional Effect</h3>
+                    <p>Energetic, positive, and mentally clear. Citrus essential oils have been shown to increase energy, elevate mood, and enhance mental clarity for productive thinking.</p>
+                    <div class="mood-tags">
+                        <span class="mood-tag">Energy</span>
+                        <span class="mood-tag">Positivity</span>
+                        <span class="mood-tag">Mental Clarity</span>
+                        <span class="mood-tag">Uplifting</span>
+                    </div>
+                </div>
+                
+                <div class="scent-benefits">
+                    <h4><i class="fas fa-brain"></i> Scientific Benefit</h4>
+                    <p>Citrus essential oils have demonstrated in research studies their ability to increase energy levels, improve mood, and enhance mental clarity through their stimulating properties.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-sun"></i> Experience Type</h3>
+                    <p>This scent supports morning journalling by creating a positive mindset, boosting energy for creative thinking, and enhancing mental clarity for reflection.</p>
+                    <div class="project-indicator morning-indicator">
+                        <i class="fas fa-sun"></i> Morning Journalling
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page" id="ginger">
+            <a href="#" class="back-button" data-page="morning-journalling">
+                <i class="fas fa-arrow-left"></i> Back to Morning Scents
+            </a>
+            
+            <div class="scent-detail-header">
+                <div class="detail-icon" style="background-color: #FF9800;">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="scent-detail-title">
+                    <h2>Ginger</h2>
+                    <p>Zingiber officinale</p>
+                </div>
+            </div>
+            
+            <div class="scent-detail-content">
+                <div class="detail-section">
+                    <h3><i class="fas fa-quote-left"></i> Description</h3>
+                    <p>A warm, spicy, and awakening scent with earthy undertones. Ginger provides a gentle but effective stimulation that feels both grounding and energizing.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-heart"></i> Mood & Emotional Effect</h3>
+                    <p>Focused, invigorated, and fatigue-resistant. As a mild trigeminal stimulant, ginger can improve focus, reduce mental fatigue, and provide gentle invigoration.</p>
+                    <div class="mood-tags">
+                        <span class="mood-tag">Focus</span>
+                        <span class="mood-tag">Invigoration</span>
+                        <span class="mood-tag">Fatigue Reduction</span>
+                        <span class="mood-tag">Awakening</span>
+                    </div>
+                </div>
+                
+                <div class="scent-benefits">
+                    <h4><i class="fas fa-brain"></i> Scientific Benefit</h4>
+                    <p>Ginger acts as a mild trigeminal stimulant, with studies suggesting it can improve focus, reduce fatigue, and provide invigoration without overstimulation.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-sun"></i> Experience Type</h3>
+                    <p>This scent supports morning journalling by reducing mental fatigue, improving concentration for detailed reflection, and providing gentle awakening energy.</p>
+                    <div class="project-indicator morning-indicator">
+                        <i class="fas fa-sun"></i> Morning Journalling
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Evening Scent Details -->
+        <section class="page" id="lavender">
+            <a href="#" class="back-button" data-page="evening-journalling">
+                <i class="fas fa-arrow-left"></i> Back to Evening Scents
+            </a>
+            
+            <div class="scent-detail-header">
+                <div class="detail-icon" style="background-color: #9C27B0;">
+                    <i class="fas fa-wind"></i>
+                </div>
+                <div class="scent-detail-title">
+                    <h2>Lavender</h2>
+                    <p>Lavandula angustifolia</p>
+                </div>
+            </div>
+            
+            <div class="scent-detail-content">
+                <div class="detail-section">
+                    <h3><i class="fas fa-quote-left"></i> Description</h3>
+                    <p>A floral, soothing, and tranquil scent with herbal notes. Lavender is renowned for its calming properties that help transition from daytime alertness to evening relaxation.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-heart"></i> Mood & Emotional Effect</h3>
+                    <p>Relaxed, anxiety-free, and sleep-ready. Lavender has strong evidence for reducing anxiety, promoting deep relaxation, and improving sleep quality.</p>
+                    <div class="mood-tags">
+                        <span class="mood-tag">Relaxation</span>
+                        <span class="mood-tag">Anxiety Reduction</span>
+                        <span class="mood-tag">Sleep Preparation</span>
+                        <span class="mood-tag">Tranquility</span>
+                    </div>
+                </div>
+                
+                <div class="scent-benefits">
+                    <h4><i class="fas fa-brain"></i> Scientific Benefit</h4>
+                    <p>Lavender has extensive research supporting its effectiveness in reducing anxiety, promoting relaxation, and improving sleep quality through its calming properties.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-moon"></i> Experience Type</h3>
+                    <p>This scent supports evening journalling by reducing anxiety, promoting relaxation for reflective writing, and preparing the mind and body for restful sleep.</p>
+                    <div class="project-indicator evening-indicator">
+                        <i class="fas fa-moon"></i> Evening Journalling
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page" id="chamomile">
+            <a href="#" class="back-button" data-page="evening-journalling">
+                <i class="fas fa-arrow-left"></i> Back to Evening Scents
+            </a>
+            
+            <div class="scent-detail-header">
+                <div class="detail-icon" style="background-color: #FFB74D;">
+                    <i class="fas fa-spa"></i>
+                </div>
+                <div class="scent-detail-title">
+                    <h2>Chamomile</h2>
+                    <p>Matricaria recutita</p>
+                </div>
+            </div>
+            
+            <div class="scent-detail-content">
+                <div class="detail-section">
+                    <h3><i class="fas fa-quote-left"></i> Description</h3>
+                    <p>A sweet, apple-like, and gentle floral scent. Chamomile provides subtle calming effects that soothe the nervous system without being overpowering.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-heart"></i> Mood & Emotional Effect</h3>
+                    <p>Calm, peaceful, and gently sedated. With mild trigeminal effects, chamomile promotes calmness and sleep, often used in aromatherapy for bedtime routines.</p>
+                    <div class="mood-tags">
+                        <span class="mood-tag">Calmness</span>
+                        <span class="mood-tag">Peace</span>
+                        <span class="mood-tag">Gentle Sedation</span>
+                        <span class="mood-tag">Sleep Promotion</span>
+                    </div>
+                </div>
+                
+                <div class="scent-benefits">
+                    <h4><i class="fas fa-brain"></i> Scientific Benefit</h4>
+                    <p>Chamomile provides mild trigeminal stimulation while promoting calmness and sleep, making it a staple in aromatherapy for bedtime relaxation and stress reduction.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-moon"></i> Experience Type</h3>
+                    <p>This scent supports evening journalling by creating a gentle, peaceful atmosphere for reflection, helping to unwind from the day, and preparing for restful sleep.</p>
+                    <div class="project-indicator evening-indicator">
+                        <i class="fas fa-moon"></i> Evening Journalling
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page" id="sandalwood">
+            <a href="#" class="back-button" data-page="evening-journalling">
+                <i class="fas fa-arrow-left"></i> Back to Evening Scents
+            </a>
+            
+            <div class="scent-detail-header">
+                <div class="detail-icon" style="background-color: #795548;">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="scent-detail-title">
+                    <h2>Sandalwood</h2>
+                    <p>Santalum album</p>
+                </div>
+            </div>
+            
+            <div class="scent-detail-content">
+                <div class="detail-section">
+                    <h3><i class="fas fa-quote-left"></i> Description</h3>
+                    <p>A woody, warm, and calming scent with rich, earthy notes. Sandalwood provides subtle grounding that helps quiet the mind and ease into relaxation.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-heart"></i> Mood & Emotional Effect</h3>
+                    <p>Grounded, calm, and centered. With subtle trigeminal stimulation, sandalwood promotes a calm, grounded feeling that supports sleep preparation.</p>
+                    <div class="mood-tags">
+                        <span class="mood-tag">Grounding</span>
+                        <span class="mood-tag">Calm</span>
+                        <span class="mood-tag">Centered</span>
+                        <span class="mood-tag">Sleep Support</span>
+                    </div>
+                </div>
+                
+                <div class="scent-benefits">
+                    <h4><i class="fas fa-brain"></i> Scientific Benefit</h4>
+                    <p>Sandalwood provides subtle trigeminal stimulation that promotes calmness and grounded feelings, making it effective for supporting sleep and reducing evening anxiety.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-moon"></i> Experience Type</h3>
+                    <p>This scent supports evening journalling by creating a grounded, centered state for reflection, helping release the day's stress, and supporting the transition to sleep.</p>
+                    <div class="project-indicator evening-indicator">
+                        <i class="fas fa-moon"></i> Evening Journalling
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Essence &copy; 2024 | A Sensory Experience</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const burgerMenu = document.getElementById('burgerMenu');
+        const navOverlay = document.getElementById('navOverlay');
+        const navPanel = document.getElementById('navPanel');
+        const closeMenu = document.getElementById('closeMenu');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const projectCards = document.querySelectorAll('.project-card');
+        const scentCards = document.querySelectorAll('.scent-card');
+        const backButtons = document.querySelectorAll('.back-button');
+        const pages = document.querySelectorAll('.page');
+        
+        // Navigation State
+        let currentPage = 'home';
+        
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                currentPage = pageId;
+                
+                // Update active nav link
+                navLinks.forEach(link => {
+                    if (link.getAttribute('data-page') === pageId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                
+                // Close nav panel if open
+                closeNavigation();
+            }
+        }
+        
+        function openNavigation() {
+            navOverlay.classList.add('active');
+            navPanel.classList.add('active');
+        }
+        
+        function closeNavigation() {
+            navOverlay.classList.remove('active');
+            navPanel.classList.remove('active');
+        }
+        
+        // Event Listeners
+        burgerMenu.addEventListener('click', openNavigation);
+        navOverlay.addEventListener('click', closeNavigation);
+        closeMenu.addEventListener('click', closeNavigation);
+        
+        // Navigation links
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+        
+        // Project cards on home page
+        projectCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+        
+        // Scent cards on selection pages
+        scentCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const scentId = this.getAttribute('data-scent');
+                showPage(scentId);
+            });
+        });
+        
+        // Back buttons on all pages
+        backButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+        
+        // Add smooth page transitions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set home page as active
+            showPage('home');
+            
+            // Add subtle animation to project cards on load
+            setTimeout(() => {
+                projectCards.forEach((card, index) => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.opacity = '1';
+                });
+            }, 300);
+        });
+        
+        // Initialize project cards with animation
+        projectCards.forEach(card => {
+            card.style.transform = 'translateY(20px)';
+            card.style.opacity = '0';
+            card.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        });
+        
+        // Add hover effect to scent cards
+        scentCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
